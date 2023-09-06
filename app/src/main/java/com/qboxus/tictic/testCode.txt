@@ -1,0 +1,134 @@
+import android.graphics.Bitmap
+import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener
+import com.github.barteksc.pdfviewer.listener.OnPageChangeListener
+import com.github.barteksc.pdfviewer.util.FitPolicy
+import com.github.barteksc.pdfviewer.PDFView
+import java.io.File
+import java.io.FileOutputStream
+
+class PdfToPngActivity : AppCompatActivity() {
+
+    private lateinit var pdfView: PDFView
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_pdf_to_png)
+
+        pdfView = findViewById(R.id.pdfView)
+
+        // Load the PDF file
+        val pdfFile = File("/path/to/your/pdf.pdf") // Replace with your PDF file path
+        pdfView.fromFile(pdfFile)
+            .defaultPage(0)
+            .onLoad(object : OnLoadCompleteListener {
+                override fun loadComplete(numPages: Int) {
+                    // PDF has been loaded, now convert the page to PNG
+                    convertPageToPng(pdfView, 0)
+                }
+            })
+            .load()
+    }
+
+    private fun convertPageToPng(pdfView: PDFView, pageIndex: Int) {
+        val dpi = 300 // Set the desired DPI (e.g., 300)
+        
+        // Calculate the width and height based on the DPI
+        val width = (pdfView.width * dpi) / 72 // 1 inch = 72 points
+        val height = (pdfView.height * dpi) / 72 // 1 inch = 72 points
+
+        val bitmap: Bitmap = pdfView.getBitmap(
+            width,
+            height,
+            pageIndex,
+            true // Enable anti-aliasing for better quality
+        )
+
+        // Save the Bitmap as a PNG file
+        val outputFile = File("/path/to/your/output.png") // Replace with your desired output path
+        try {
+            val outputStream = FileOutputStream(outputFile)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+            outputStream.close()
+            Toast.makeText(
+                this,
+                "PDF page converted to PNG and saved at ${outputFile.absolutePath}",
+                Toast.LENGTH_LONG
+            ).show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this, "Error converting PDF to PNG", Toast.LENGTH_SHORT).show()
+        }
+    }
+}
+///////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////
+
+import android.graphics.Bitmap
+import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener
+import com.github.barteksc.pdfviewer.util.FitPolicy
+import com.github.barteksc.pdfviewer.PDFView
+import java.io.File
+import java.io.FileOutputStream
+
+class PdfToPngActivity : AppCompatActivity() {
+
+    private lateinit var pdfView: PDFView
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_pdf_to_png)
+
+        pdfView = findViewById(R.id.pdfView)
+
+        // Load the PDF file
+        val pdfFile = File("/path/to/your/pdf.pdf") // Replace with your PDF file path
+        pdfView.fromFile(pdfFile)
+            .defaultPage(0)
+            .onLoad(object : OnLoadCompleteListener {
+                override fun loadComplete(numPages: Int) {
+                    // PDF has been loaded, now convert the page to PNG
+                    convertPageToPng(pdfView, 0)
+                }
+            })
+            .load()
+    }
+
+    private fun convertPageToPng(pdfView: PDFView, pageIndex: Int) {
+        val scaleFactor = 2 // Increase this factor for higher resolution
+        val dpi = 600 // Set a higher DPI value (e.g., 600)
+
+        val width = pdfView.width * scaleFactor
+        val height = pdfView.height * scaleFactor
+
+        val bitmap: Bitmap = pdfView.getBitmap(
+            width,
+            height,
+            pageIndex,
+            false // Disable antialiasing
+        )
+
+        // Save the Bitmap as a PNG file
+        val outputFile = File("/path/to/your/output.png") // Replace with your desired output path
+        try {
+            val outputStream = FileOutputStream(outputFile)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+            outputStream.close()
+            Toast.makeText(
+                this,
+                "PDF page converted to PNG and saved at ${outputFile.absolutePath}",
+                Toast.LENGTH_LONG
+            ).show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this, "Error converting PDF to PNG", Toast.LENGTH_SHORT).show()
+        }
+    }
+}
