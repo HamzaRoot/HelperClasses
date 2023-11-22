@@ -1,0 +1,2 @@
+window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN)
+        window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
